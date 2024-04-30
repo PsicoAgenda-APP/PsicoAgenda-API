@@ -1,17 +1,20 @@
 import { Router} from "express";
-import { connection } from '../../db/db.js'; 
+import { traerUsuarios, actualizarUsuario, eliminarUsuario, loginUsuario, insertarUsuario } from "../controller/usuarios.controller.js";
 
 const router = Router();
 
-router.get('/usuarioooo', async (req, res) => {
-    try {
-      const [result] = await connection.query('SELECT * FROM Usuario');
-      res.json(result);
-    } catch (error) {
-      console.error('Error al obtener usuarios:', error);
-      res.status(500).json({ message: 'Error al obtener usuarios.' });
-    }
-  });
+router.get('/usuarioooo', traerUsuarios );
+
+//ruta para consultar inicio de sesion
+router.get('/usuarios', loginUsuario);
+
+router.put('/usuarios',actualizarUsuario );
+
+router.delete('/usuarios', eliminarUsuario );
+
+// Ruta para crear un nuevo usuario
+router.post('/usuarios', insertarUsuario);
+
 
 
 export default router
