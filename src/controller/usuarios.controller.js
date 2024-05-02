@@ -11,6 +11,7 @@ export const traerUsuarios = async (req, res) => {
     }
 };
 
+
 export const loginUsuario = async (req, res) => {
     const { CorreoElectronico, Contrasena } = req.query;
 
@@ -38,11 +39,6 @@ export const loginUsuario = async (req, res) => {
         res.status(500).json({ message: "Error al buscar usuario." });
     }
 };
-
-export const actualizarUsuario = (req, res) =>
-    res.send("Actualizando usuarios");
-
-export const eliminarUsuario = (req, res) => res.send("Borrando usuarios");
 
 export const insertarUsuario = async (req, res) => {
     try {
@@ -126,3 +122,9 @@ export const insertarUsuario = async (req, res) => {
         res.status(400).json({ message: "Error al procesar la solicitud." }); // Enviar respuesta de error al cliente
     }
 };
+
+
+export const eliminarUsuario = (req, res) => res.send("Borrando usuarios");
+
+export const actualizarContrasenaUsuario = (req, res) =>
+    res.send("Actualizando usuarios");
