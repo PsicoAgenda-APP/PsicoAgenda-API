@@ -1,18 +1,16 @@
 import { connection } from "../../db/db.js";
 
-
-export const get_psicologos = async (req, res) => {
+export const get_pacientes = async (req, res) => {
     try {
-        const [result] = await connection.query("SELECT * FROM Usuario WHERE IdTipoUsuario = 2");
+        const [result] = await connection.query("SELECT * FROM Usuario WHERE IdTipoUsuario = 1");
         res.json(result);
     } catch (error) {
-        console.error("Error al obtener Psicologos:", error);
-        res.status(500).json({ message: "Error al obtener Psicologos." });
+        console.error("Error al obtener Paciente:", error);
+        res.status(500).json({ message: "Error al obtener Pacientes." });
     }
 };
 
-
-export const insertarPsicologo = async (req, res) => {
+export const insertarPaciente = async (req, res) => {
     try {
         // Extraer los datos del cuerpo de la solicitud
         const {
@@ -28,9 +26,7 @@ export const insertarPsicologo = async (req, res) => {
             CorreoElectronico,
             Contrasena,
             IdTipoUsuario,
-            Rut,
-            ValorSesion,
-            IdEspecialidad // Agregado el campo IdEspecialidad
+            Rut
         } = req.body;
 
         console.log("Datos del cuerpo de la solicitud:", req.body);
@@ -49,8 +45,7 @@ export const insertarPsicologo = async (req, res) => {
             CorreoElectronico === "" ||
             Contrasena === "" ||
             IdTipoUsuario === "" ||
-            Rut === "" ||
-            ValorSesion === "" // Agregado ValorSesion a la verificación de campos obligatorios
+            Rut === "" 
         ) {
             return res
                 .status(400)
@@ -89,15 +84,15 @@ export const insertarPsicologo = async (req, res) => {
 
         // Inserción en la tabla Psicologo
         await connection.query(
-            "INSERT INTO Psicologo (ValorSesion, IdEspecialidad, IdUsuario) VALUES (?, ?, ?)",
-            [ValorSesion, IdEspecialidad, idUsuario]
+            "INSERT INTO Paciente (IdUsuario) VALUES (?)",
+            [idUsuario]
         );
 
         // Enviar respuesta al cliente con un mensaje de éxito
-        res.status(201).json({ message: "Psicologo creado correctamente." });
+        res.status(201).json({ message: "Paciente Creado Correctamente." });
     } catch (error) {
         // Manejo de errores
-        console.error("Error al crear usuario Psicologo:", error);
+        console.error("Error al crear Paciente:", error);
         res.status(400).json({ message: "Error al procesar la solicitud." }); // Enviar respuesta de error al cliente
     }
 };

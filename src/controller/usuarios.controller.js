@@ -10,6 +10,7 @@ export const traerUsuarios = async (req, res) => {
         res.status(500).json({ message: "Error al obtener usuarios." });
     }
 };
+
 export const loginUsuario = async (req, res) => {
     const { CorreoElectronico, Contrasena } = req.query;
 
