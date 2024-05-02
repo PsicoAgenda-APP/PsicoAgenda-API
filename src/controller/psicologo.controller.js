@@ -1,49 +1,18 @@
 import { connection } from "../../db/db.js";
 
 
-export const traerUsuarios = async (req, res) => {
+export const traerPsicologo = async (req, res) => {
     try {
-        const [result] = await connection.query("SELECT * FROM Usuario");
+        const [result] = await connection.query("SELECT * FROM Psicologo");
         res.json(result);
     } catch (error) {
-        console.error("Error al obtener usuarios:", error);
-        res.status(500).json({ message: "Error al obtener usuarios." });
-    }
-};
-export const loginUsuario = async (req, res) => {
-    const { CorreoElectronico, Contrasena } = req.query;
-
-    if (!CorreoElectronico || !Contrasena) {
-        return res
-            .status(400)
-            .json({
-                message: "CorreoElectronico y Contrasena son parámetros obligatorios.",
-            });
-    }
-
-    try {
-        const [result] = await connection.query(
-            "SELECT * FROM Usuario WHERE CorreoElectronico = ? AND Contrasena = ?",
-            [CorreoElectronico, Contrasena]
-        );
-
-        if (result.length === 0) {
-            return res.status(404).json({ message: "Credenciales Invalidas." });
-        }
-
-        res.json(result);
-    } catch (error) {
-        console.error("Error al buscar usuario:", error);
-        res.status(500).json({ message: "Error al buscar usuario." });
+        console.error("Error al obtener Psicologos:", error);
+        res.status(500).json({ message: "Error al obtener Psicologos." });
     }
 };
 
-export const actualizarUsuario = (req, res) =>
-    res.send("Actualizando usuarios");
 
-export const eliminarUsuario = (req, res) => res.send("Borrando usuarios");
-
-export const insertarUsuario = async (req, res) => {
+export const insertarPsicologo = async (req, res) => {
     try {
         // Extraer los datos del cuerpo de la solicitud
         const {
@@ -60,6 +29,8 @@ export const insertarUsuario = async (req, res) => {
             Contrasena,
             IdTipoUsuario,
             Rut,
+            ValorSesion,
+            IdEspecialidad // Agregado el campo IdEspecialidad
         } = req.body;
 
         console.log("Datos del cuerpo de la solicitud:", req.body);
@@ -78,7 +49,8 @@ export const insertarUsuario = async (req, res) => {
             CorreoElectronico === "" ||
             Contrasena === "" ||
             IdTipoUsuario === "" ||
-            Rut === "" 
+            Rut === "" ||
+            ValorSesion === "" // Agregado ValorSesion a la verificación de campos obligatorios
         ) {
             return res
                 .status(400)
@@ -109,13 +81,17 @@ export const insertarUsuario = async (req, res) => {
         const idPersona = personaResult.insertId; // Obtener el ID de la persona insertada
 
         // Inserción en la tabla Usuario
-        await connection.query(
-            "INSERT INTO Usuario (CorreoElectronico, Contrasena, IdPersona, IdTipoUsuario ) VALUES (?, ?, ?, ? )",
+        const [usuarioResult] = await connection.query(
+            "INSERT INTO Usuario (CorreoElectronico, Contrasena, IdPersona, IdTipoUsuario) VALUES (?, ?, ?, ?)",
             [CorreoElectronico, Contrasena, idPersona, IdTipoUsuario]
         );
+        const idUsuario = usuarioResult.insertId; // Obtener el ID del usuario insertado
 
-        
-
+        // Inserción en la tabla Psicologo
+        await connection.query(
+            "INSERT INTO Psicologo (ValorSesion, IdEspecialidad, IdUsuario) VALUES (?, ?, ?)",
+            [ValorSesion, IdEspecialidad, idUsuario]
+        );
 
         // Enviar respuesta al cliente con un mensaje de éxito
         res.status(201).json({ message: "Usuario creado correctamente." });

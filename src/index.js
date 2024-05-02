@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import usuariosRoutes from './routes/usuarios.routes.js'
+import psicologosRoutes from './routes/psicologo.routes.js'
 
 const app = express();
 
@@ -13,10 +14,7 @@ app.use(cors());
 
 
 app.use(usuariosRoutes)
-
-
-
-
+app.use(psicologosRoutes)
 
 
 
