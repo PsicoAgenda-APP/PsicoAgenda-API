@@ -124,7 +124,37 @@ export const insertarUsuario = async (req, res) => {
 };
 
 
-export const eliminarUsuario = (req, res) => res.send("Borrando usuarios");
+export const cambiarContrasena = async (req, res) => {
+    const { CorreoElectronico, NuevaContrasena } = req.body;
 
-export const actualizarContrasenaUsuario = (req, res) =>
-    res.send("Actualizando usuarios");
+    if (!CorreoElectronico || !NuevaContrasena) {
+        return res.status(400).json({
+            message: "CorreoElectronico y NuevaContrasena son parámetros obligatorios.",
+        });
+    }
+
+    try {
+        const [result] = await connection.query(
+            "SELECT * FROM Usuario WHERE CorreoElectronico = ?",
+            [CorreoElectronico]
+        );
+
+        if (result.length === 0) {
+            return res.status(404).json({ message: "Usuario no encontrado." });
+        }
+
+        // Actualizar la contraseña del usuario
+        await connection.query(
+            "UPDATE Usuario SET Contrasena = ? WHERE CorreoElectronico = ?",
+            [NuevaContrasena, CorreoElectronico]
+        );
+
+        res.json({ message: "Contraseña cambiada exitosamente." });
+    } catch (error) {
+        console.error("Error al cambiar la contraseña:", error);
+        res.status(500).json({ message: "Error al cambiar la contraseña." });
+    }
+};
+    
+
+export const eliminarUsuario = (req, res) => res.send("Borrando usuarios");

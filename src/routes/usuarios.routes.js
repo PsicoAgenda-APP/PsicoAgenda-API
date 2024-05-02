@@ -1,5 +1,5 @@
 import { Router} from "express";
-import { traerUsuarios, actualizarContrasenaUsuario, eliminarUsuario, loginUsuario, insertarUsuario } from "../controller/usuarios.controller.js";
+import { traerUsuarios, cambiarContrasena, eliminarUsuario, loginUsuario, insertarUsuario } from "../controller/usuarios.controller.js";
 
 const router = Router();
 
@@ -13,7 +13,7 @@ router.get('/usuarios/login', loginUsuario);
 router.post('/usuarios/registro_usuario', insertarUsuario);
 
 
-router.put('/usuarios/cambiar_contrasena',actualizarContrasenaUsuario );
+router.put('/usuarios/cambiar_contrasena',cambiarContrasena );
 
 router.delete('/usuarios/elimina_rusuario', eliminarUsuario );
 
