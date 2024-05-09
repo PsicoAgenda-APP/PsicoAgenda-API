@@ -4,7 +4,7 @@ import {insertarPsicologo, get_psicologos} from "../controller/psicologo.control
 const router = Router();
 
 
-router.get('/usuarios/get_psicologos', get_psicologos);
+router.get('/psicologos/get_psicologos', get_psicologos);
 
 
 router.post('/usuarios/registro_psicologo', insertarPsicologo);
