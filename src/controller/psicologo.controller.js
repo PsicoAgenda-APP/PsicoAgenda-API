@@ -106,3 +106,71 @@ export const insertarPsicologo = async (req, res) => {
         res.status(400).json({ message: "Error al procesar la solicitud." }); // Enviar respuesta de error al cliente
     }
 };
+
+
+export const actualizarPsicologo = async (req, res) => {
+    try {
+        // Extraer los datos del cuerpo de la solicitud
+        const {
+            IdPsicologo, // Se necesita el ID del psicólogo para identificar qué psicólogo actualizar
+            Calle,
+            Numero,
+            IdComuna,
+            CorreoElectronico,
+            ValorSesion,
+            Telefono
+        } = req.body;
+
+        console.log("Datos del cuerpo de la solicitud:", req.body);
+
+        // Verificar si algún campo para actualizar está presente en la solicitud
+        if (
+            !IdPsicologo ||
+            (!Calle && !Numero && !IdComuna && !CorreoElectronico && !ValorSesion && !Telefono)
+        ) {
+            return res.status(400).json({ message: "Faltan campos para actualizar." });
+        }
+
+        // Inicializar array para almacenar los valores a actualizar en la base de datos
+        const valoresActualizados = [];
+
+        // Actualizar dirección si se proporcionan datos de dirección
+        if (Calle && Numero && IdComuna) {
+            valoresActualizados.push(`Calle = '${Calle}'`, `Numero = '${Numero}'`, `IdComuna = '${IdComuna}'`);
+        }
+
+        // Actualizar correo electrónico si se proporciona
+        if (CorreoElectronico) {
+            valoresActualizados.push(`CorreoElectronico = '${CorreoElectronico}'`);
+        }
+
+        // Actualizar valor de sesión si se proporciona
+        if (ValorSesion) {
+            valoresActualizados.push(`ValorSesion = '${ValorSesion}'`);
+        }
+
+        // Actualizar teléfono si se proporciona
+        if (Telefono) {
+            valoresActualizados.push(`Telefono = '${Telefono}'`);
+        }
+
+        // Si no hay campos para actualizar, enviar un mensaje de error
+        if (valoresActualizados.length === 0) {
+            return res.status(400).json({ message: "No se proporcionaron campos válidos para actualizar." });
+        }
+
+        // Realizar la actualización en la base de datos
+        await connection.query(
+            `UPDATE Psicologo SET ${valoresActualizados.join(', ')} WHERE IdPsicologo = ?`,
+            [IdPsicologo]
+        );
+
+        // Enviar respuesta al cliente con un mensaje de éxito
+        res.status(200).json({ message: "Psicologo actualizado correctamente." });
+    } catch (error) {
+        // Manejo de errores
+        console.error("Error al actualizar psicólogo:", error);
+        res.status(400).json({ message: "Error al procesar la solicitud de actualización." }); // Enviar respuesta de error al cliente
+    }
+};
+

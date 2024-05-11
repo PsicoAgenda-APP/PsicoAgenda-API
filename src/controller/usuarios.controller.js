@@ -158,3 +158,74 @@ export const cambiarContrasena = async (req, res) => {
     
 
 export const eliminarUsuario = (req, res) => res.send("Borrando usuarios");
+
+export const getDetallesCitas = async (req, res) => {
+    try {
+        const sqlQuery = `
+            SELECT
+                DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
+                c.HoraCita AS hora,
+                CONCAT(pp.PrimerNombre, ' ', pp.SegundoNombre, ' ', pp.ApellidoPaterno, ' ', pp.ApellidoMaterno) AS nombre_paciente,
+                pp.Rut AS rut_paciente,
+                c.Diagnostico,
+                c.Tratamiento,
+                CONCAT(ps.PrimerNombre, ' ', ps.SegundoNombre, ' ', ps.ApellidoPaterno, ' ', ps.ApellidoMaterno) AS nombre_psicologo,
+                ec.DescripcionEstado AS estado_cita
+            FROM
+                Cita c
+            INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
+            INNER JOIN Usuario up ON pc.IdUsuario = up.IdUsuario
+            INNER JOIN Persona pp ON up.IdPersona = pp.IdPersona
+            INNER JOIN Persona ps ON c.IdPsicologo = ps.IdPersona
+            INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita;
+        `;
+
+        const [result] = await connection.query(sqlQuery);
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener detalles de citas:", error);
+        res.status(500).json({ message: "Error al obtener detalles de citas." });
+    }
+};
+
+export const getDetallesCitasById = async (req, res) => {
+    try {
+        const { IdUsuario } = req.query;
+
+        // Consulta SQL para obtener las citas asociadas al usuario
+        const sqlQuery = `
+            SELECT
+                up.IdUsuario,
+                DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
+                c.HoraCita AS hora,
+                CONCAT(pp.PrimerNombre, ' ', pp.SegundoNombre, ' ', pp.ApellidoPaterno, ' ', pp.ApellidoMaterno) AS nombre_paciente,
+                pp.Rut AS rut_paciente,
+                c.Diagnostico,
+                c.Tratamiento,
+                CONCAT(ps.PrimerNombre, ' ', ps.SegundoNombre, ' ', ps.ApellidoPaterno, ' ', ps.ApellidoMaterno) AS nombre_psicologo,
+                ec.DescripcionEstado AS estado_cita
+            FROM
+                Cita c
+            INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
+            INNER JOIN Usuario up ON pc.IdUsuario = up.IdUsuario
+            INNER JOIN Persona pp ON up.IdPersona = pp.IdPersona
+            INNER JOIN Persona ps ON c.IdPsicologo = ps.IdPersona
+            INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
+            WHERE up.IdUsuario = ?;
+        `;
+
+        // Ejecutar la consulta SQL y obtener el resultado
+        const [result] = await connection.query(sqlQuery, [IdUsuario]);
+
+        // Verificar si se encontraron citas asociadas al usuario
+        if (result.length === 0) {
+            return res.status(404).json({ message: "No se encontraron citas para este usuario." });
+        }
+
+        // Enviar el resultado como respuesta
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener detalles de citas:", error);
+        res.status(500).json({ message: "Error al obtener detalles de citas." });
+    }
+};
