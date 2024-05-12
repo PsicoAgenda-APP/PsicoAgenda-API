@@ -162,22 +162,26 @@ export const eliminarUsuario = (req, res) => res.send("Borrando usuarios");
 export const getDetallesCitas = async (req, res) => {
     try {
         const sqlQuery = `
-            SELECT
+        SELECT
+                up.IdUsuario,
                 DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
                 c.HoraCita AS hora,
                 CONCAT(pp.PrimerNombre, ' ', pp.SegundoNombre, ' ', pp.ApellidoPaterno, ' ', pp.ApellidoMaterno) AS nombre_paciente,
                 pp.Rut AS rut_paciente,
                 c.Diagnostico,
                 c.Tratamiento,
-                CONCAT(ps.PrimerNombre, ' ', ps.SegundoNombre, ' ', ps.ApellidoPaterno, ' ', ps.ApellidoMaterno) AS nombre_psicologo,
+                CONCAT(pp2.PrimerNombre, ' ', pp2.SegundoNombre, ' ', pp2.ApellidoPaterno, ' ', pp2.ApellidoMaterno) AS nombre_psicologo,
                 ec.DescripcionEstado AS estado_cita
             FROM
                 Cita c
             INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
             INNER JOIN Usuario up ON pc.IdUsuario = up.IdUsuario
             INNER JOIN Persona pp ON up.IdPersona = pp.IdPersona
-            INNER JOIN Persona ps ON c.IdPsicologo = ps.IdPersona
-            INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita;
+            INNER JOIN Psicologo p ON c.IdPsicologo = p.IdPsicologo
+            INNER JOIN Usuario up2 ON p.IdUsuario = up2.IdUsuario
+            INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
+            INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
+            
         `;
 
         const [result] = await connection.query(sqlQuery);
@@ -194,24 +198,27 @@ export const getDetallesCitasById = async (req, res) => {
 
         // Consulta SQL para obtener las citas asociadas al usuario
         const sqlQuery = `
-            SELECT
-                up.IdUsuario,
-                DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
-                c.HoraCita AS hora,
-                CONCAT(pp.PrimerNombre, ' ', pp.SegundoNombre, ' ', pp.ApellidoPaterno, ' ', pp.ApellidoMaterno) AS nombre_paciente,
-                pp.Rut AS rut_paciente,
-                c.Diagnostico,
-                c.Tratamiento,
-                CONCAT(ps.PrimerNombre, ' ', ps.SegundoNombre, ' ', ps.ApellidoPaterno, ' ', ps.ApellidoMaterno) AS nombre_psicologo,
-                ec.DescripcionEstado AS estado_cita
-            FROM
-                Cita c
-            INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
-            INNER JOIN Usuario up ON pc.IdUsuario = up.IdUsuario
-            INNER JOIN Persona pp ON up.IdPersona = pp.IdPersona
-            INNER JOIN Persona ps ON c.IdPsicologo = ps.IdPersona
-            INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
-            WHERE up.IdUsuario = ?;
+        SELECT
+        up.IdUsuario,
+        DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
+        c.HoraCita AS hora,
+        CONCAT(pp.PrimerNombre, ' ', pp.SegundoNombre, ' ', pp.ApellidoPaterno, ' ', pp.ApellidoMaterno) AS nombre_paciente,
+        pp.Rut AS rut_paciente,
+        c.Diagnostico,
+        c.Tratamiento,
+        CONCAT(pp2.PrimerNombre, ' ', pp2.SegundoNombre, ' ', pp2.ApellidoPaterno, ' ', pp2.ApellidoMaterno) AS nombre_psicologo,
+        ec.DescripcionEstado AS estado_cita
+    FROM
+        Cita c
+    INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
+    INNER JOIN Usuario up ON pc.IdUsuario = up.IdUsuario
+    INNER JOIN Persona pp ON up.IdPersona = pp.IdPersona
+    INNER JOIN Psicologo p ON c.IdPsicologo = p.IdPsicologo
+    INNER JOIN Usuario up2 ON p.IdUsuario = up2.IdUsuario
+    INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
+    INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
+    WHERE pc.IdUsuario = ?;
+    
         `;
 
         // Ejecutar la consulta SQL y obtener el resultado
