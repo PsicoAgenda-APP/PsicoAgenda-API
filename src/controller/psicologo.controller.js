@@ -4,11 +4,45 @@ import { connection } from "../../db/db.js";
 export const get_psicologos = async (req, res) => {
     try {
         const [result] = await connection.query
-        ("SELECT " +
-         "CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre, "+
-         "e.NombreEspecialidad, u.CorreoElectronico, ps.ValorSesion, ps.Descripcion FROM Psicologo ps " + 
-         "INNER JOIN Especialidad e ON ps.IdEspecialidad  = e.IdEspecialidad " +
-         "INNER JOIN Usuario u ON ps.IdUsuario = u.IdUsuario INNER JOIN Persona p ON p.IdPersona = u.IdPersona");
+            ("SELECT ps.IdPsicologo, " +
+                "CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre, " +
+                "e.NombreEspecialidad, u.CorreoElectronico, ps.ValorSesion, ps.Descripcion FROM Psicologo ps " +
+                "INNER JOIN Especialidad e ON ps.IdEspecialidad  = e.IdEspecialidad " +
+                "INNER JOIN Usuario u ON ps.IdUsuario = u.IdUsuario INNER JOIN Persona p ON p.IdPersona = u.IdPersona");
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener Psicologos:", error);
+        res.status(500).json({ message: "Error al obtener Psicologos." });
+    }
+};
+
+
+export const horas_psicologo = async (req, res) => {
+    const { IdPsicologo, FechaCita } = req.query;
+    try {
+        const [result] = await connection.query
+            ("SELECT c.IdCita, DATE_FORMAT(c.HoraCita, '%H:%i') as HoraCita FROM Cita c " +
+                "WHERE c.IdPsicologo = ? AND " +
+                "DATE_FORMAT(c.FechaCita, '%d-%m-%Y') = ? " +
+                "AND c.IdEstadoCita = 3",[IdPsicologo, FechaCita])
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener Horas:", error);
+        res.status(500).json({ message: "Error al obtener Horas." });
+    }
+};
+
+
+export const datos_psicologo = async (req, res) => {
+    const { IdPsicologo } = req.query;
+    try {
+        const [result] = await connection.query
+            ("SELECT ps.IdPsicologo, " +
+                "CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre, " +
+                "e.NombreEspecialidad, u.CorreoElectronico, ps.ValorSesion, ps.Descripcion FROM Psicologo ps " +
+                "INNER JOIN Especialidad e ON ps.IdEspecialidad  = e.IdEspecialidad " +
+                "INNER JOIN Usuario u ON ps.IdUsuario = u.IdUsuario INNER JOIN Persona p ON p.IdPersona = u.IdPersona " +
+                "WHERE ps.IdPsicologo = ?", [IdPsicologo]);
         res.json(result);
     } catch (error) {
         console.error("Error al obtener Psicologos:", error);
