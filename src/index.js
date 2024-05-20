@@ -21,7 +21,7 @@ app.use(pacientesRoutes)
 
 
 // Puerto en el que se ejecutará el servidor
-const PORT = 3000;
+const PORT = process.env.PORT;
 
 // Iniciar el servidor
 app.listen(PORT, () => {
