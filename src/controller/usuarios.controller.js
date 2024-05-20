@@ -194,7 +194,7 @@ export const getDetallesCitas = async (req, res) => {
 
 export const getDetallesCitasById = async (req, res) => {
     try {
-        const { IdUsuario } = req.query;
+        const { IdPaciente } = req.query;
 
         // Consulta SQL para obtener las citas asociadas al usuario
         const sqlQuery = `
@@ -217,12 +217,12 @@ export const getDetallesCitasById = async (req, res) => {
     INNER JOIN Usuario up2 ON p.IdUsuario = up2.IdUsuario
     INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
     INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
-    WHERE pc.IdUsuario = ?;
+    WHERE pc.IdPaciente = ?;
     
         `;
 
         // Ejecutar la consulta SQL y obtener el resultado
-        const [result] = await connection.query(sqlQuery, [IdUsuario]);
+        const [result] = await connection.query(sqlQuery, [IdPaciente]);
 
         // Verificar si se encontraron citas asociadas al usuario
         if (result.length === 0) {
