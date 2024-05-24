@@ -3,6 +3,7 @@ import cors from 'cors';
 import usuariosRoutes from './routes/usuarios.routes.js'
 import psicologosRoutes from './routes/psicologo.routes.js'
 import pacientesRoutes from './routes/paciente.routes.js'
+import webpayController from './controller/webpay.controller.js';
 
 const app = express();
 
@@ -12,8 +13,7 @@ app.use(express.json());
 // Middleware para permitir CORS
 app.use(cors());
 
-
-
+app.use('/api/v1/transbank', webpayController);
 app.use(usuariosRoutes)
 app.use(psicologosRoutes)
 app.use(pacientesRoutes)
