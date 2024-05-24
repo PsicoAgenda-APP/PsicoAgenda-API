@@ -208,3 +208,120 @@ export const actualizarPsicologo = async (req, res) => {
     }
 };
 
+export const citas_psicologo = async (req, res) => {
+    const { IdPsicologo } = req.query;
+    try {
+        const sqlQuery = `
+        SELECT
+        c.IdCita,
+        DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS FechaCita,
+        c.HoraCita AS HoraCita,
+        c.Diagnostico,
+        c.Tratamiento,
+        c.IdPaciente,
+        CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre_Paciente,
+        ec.DescripcionEstado AS estado_cita
+    FROM
+        Cita c
+    INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
+    INNER JOIN Usuario u ON pc.IdUsuario = u.IdUsuario
+    INNER JOIN Persona p ON u.IdPersona = p.IdPersona
+    INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
+    WHERE c.IdPsicologo = ? AND c.IdEstadoCita IN (1, 2)
+    ORDER BY c.FechaCita DESC, c.HoraCita DESC;
+    `;
+
+        // Ejecutar la consulta SQL y obtener el resultado
+        const [result] = await connection.query(sqlQuery, [IdPsicologo]);
+
+        // Verificar si se encontraron citas asociadas al psicólogo
+        if (result.length === 0) {
+            return res.status(404).json({ message: "No se encontraron citas." });
+        }
+
+        // Enviar el resultado como respuesta
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener el historial de citas:", error.message); // Detalle del error
+        res.status(500).json({ message: "Error al obtener el historial de citas: " + error.message }); // Detalle del error
+    }
+};
+
+//Traer historial de las citas concluidas
+export const historial_psicologo = async (req, res) => {
+    const { IdPsicologo } = req.query;
+    try {
+        const sqlQuery = `
+        SELECT
+        c.IdCita,
+        DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS FechaCita,
+        c.HoraCita AS HoraCita,
+        c.Diagnostico,
+        c.Tratamiento,
+        CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre_Paciente,
+        ec.DescripcionEstado AS estado_cita
+    FROM
+        Cita c
+    INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
+    INNER JOIN Usuario u ON pc.IdUsuario = u.IdUsuario
+    INNER JOIN Persona p ON u.IdPersona = p.IdPersona
+    INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
+    WHERE c.IdPsicologo = ? AND c.IdEstadoCita IN (2)
+    ORDER BY c.FechaCita DESC, c.HoraCita DESC;
+    `;
+
+        // Ejecutar la consulta SQL y obtener el resultado
+        const [result] = await connection.query(sqlQuery, [IdPsicologo]);
+
+        // Verificar si se encontraron citas asociadas al psicólogo
+        if (result.length === 0) {
+            return res.status(404).json({ message: "No se encontraron citas." });
+        }
+
+        // Enviar el resultado como respuesta
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener el historial de citas:", error.message); // Detalle del error
+        res.status(500).json({ message: "Error al obtener el historial de citas: " + error.message }); // Detalle del error
+    }
+};
+
+//Traer citas asignadas de psicologo
+export const atenciones_psicologo = async (req, res) => {
+    const { IdPsicologo } = req.query;
+    try {
+        const sqlQuery = `
+        SELECT
+        c.IdCita,
+        DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS FechaCita,
+        c.HoraCita AS HoraCita,
+        c.Diagnostico,
+        c.Tratamiento,
+        CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre_Paciente,
+        ec.DescripcionEstado AS estado_cita
+    FROM
+        Cita c
+    INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
+    INNER JOIN Usuario u ON pc.IdUsuario = u.IdUsuario
+    INNER JOIN Persona p ON u.IdPersona = p.IdPersona
+    INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
+    WHERE c.IdPsicologo = ? AND c.IdEstadoCita IN (1)
+    ORDER BY c.FechaCita DESC, c.HoraCita DESC;
+    `;
+
+        // Ejecutar la consulta SQL y obtener el resultado
+        const [result] = await connection.query(sqlQuery, [IdPsicologo]);
+
+        // Verificar si se encontraron citas asociadas al psicólogo
+        if (result.length === 0) {
+            return res.status(404).json({ message: "No se encontraron citas." });
+        }
+
+        // Enviar el resultado como respuesta
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener el historial de citas:", error.message); // Detalle del error
+        res.status(500).json({ message: "Error al obtener el historial de citas: " + error.message }); // Detalle del error
+    }
+};
+
