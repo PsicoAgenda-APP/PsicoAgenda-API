@@ -40,6 +40,23 @@ export const loginUsuario = async (req, res) => {
     }
 };
 
+export const obtenerIdUsuario = async (req, res) => {
+    const { IdTipoUsuario, IdUsuario } = req.query;
+    try {
+        if (IdTipoUsuario == 1) {
+            const [result] = await connection.query("SELECT * FROM Paciente p WHERE IdUsuario = ?;", [IdUsuario]);
+            res.json(result);
+        } else if (IdTipoUsuario == 2) {
+            const [result] = await connection.query("SELECT * FROM Psicologo p WHERE IdUsuario = ?;", [IdUsuario]);
+            res.json(result);
+        }
+       
+    } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        res.status(500).json({ message: "Error al obtener usuarios." });
+    }
+};
+
 export const insertarUsuario = async (req, res) => {
     try {
         // Extraer los datos del cuerpo de la solicitud

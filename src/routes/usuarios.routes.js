@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { traerUsuarios, cambiarContrasena, eliminarUsuario, loginUsuario, insertarUsuario, getDetallesCitas, getDetallesCitasById, getProximaCitaById } from "../controller/usuarios.controller.js";
+import { obtenerIdUsuario, traerUsuarios, cambiarContrasena, eliminarUsuario, loginUsuario, insertarUsuario, getDetallesCitas, getDetallesCitasById, getProximaCitaById } from "../controller/usuarios.controller.js";
 
 const router = Router();
 
@@ -20,5 +20,7 @@ router.get('/usuarios/get_citas', getDetallesCitas);
 router.get('/usuarios/get_citas_by_id', getDetallesCitasById);
 
 router.get('/usuarios/get_proxima_cita_by_id', getProximaCitaById);
+
+router.get('/usuarios/obtener_id', obtenerIdUsuario);
 
 export default router;
