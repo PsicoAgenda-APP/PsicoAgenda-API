@@ -25,9 +25,7 @@ export const loginUsuario = async (req, res) => {
 
     try {
         const [result] = await connection.query(
-            "SELECT u.*, pc.IdPaciente " +
-            "FROM Usuario u INNER JOIN Paciente pc ON pc.IdUsuario = u.IdUsuario " +
-            "WHERE CorreoElectronico = ? AND Contrasena = ?",
+            "SELECT * FROM Usuario WHERE CorreoElectronico = ? AND Contrasena = ?",
             [CorreoElectronico, Contrasena]
         );
 
