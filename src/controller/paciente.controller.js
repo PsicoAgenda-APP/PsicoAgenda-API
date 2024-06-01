@@ -161,5 +161,32 @@ export const actualizarPaciente = async (req, res) => {
         // Manejo de errores
         console.error("Error al actualizar paciente:", error);
         res.status(400).json({ message: "Error al procesar la solicitud de actualización." });
-    }
+    }    
+    
 };
+
+export const updateCita = async (req, res) => { 
+    const { IdPaciente, IdCita } = req.query;
+
+    if (!IdPaciente || !IdCita) {
+        return res
+            .status(400)
+            .json({
+                message: "Falta información para agendar la cita",
+            });
+    } else {
+
+        try {
+            await connection.query(
+                "UPDATE Cita SET Cita.IdPaciente = ?, Cita.IdEstadoCita =  1 WHERE IdCita = ?",
+                [IdPaciente, IdCita]
+            );
+            res.json({ message: "Cita Agendada Correctamente" });
+        } catch (error) {
+            // Manejo de errores
+            console.error("Error al actualizar cita:", error);
+            res.status(400).json({ message: "Error al procesar la solicitud de actualización." });
+        } 
+
+    }
+}
