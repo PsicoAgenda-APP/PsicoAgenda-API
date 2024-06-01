@@ -25,8 +25,8 @@ export const loginUsuario = async (req, res) => {
 
     try {
         const [result] = await connection.query(
-            "SELECT * FROM Usuario WHERE CorreoElectronico = ? AND Contrasena = ?",
-            [CorreoElectronico, Contrasena]
+            "SELECT * FROM Usuario WHERE CorreoElectronico = ?",
+            [CorreoElectronico]
         );
 
         if (result.length === 0) {
