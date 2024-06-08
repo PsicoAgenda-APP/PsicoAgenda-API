@@ -313,4 +313,33 @@ export const getProximaCitaById = async (req, res) => {
     }
 };
 
+export const saveToken = async (req, res) => { 
+    const { Token, CorreoElectronico } = req.query;
+
+    if (!Token || !CorreoElectronico ) {
+        return res
+            .status(400)
+            .json({
+                message: "Falta información para guardar el token",
+            });
+    } else {
+
+        try {
+            await connection.query(
+                "UPDATE Usuario SET Usuario.Token = ? WHERE CorreoElectronico = ?",
+                [Token, CorreoElectronico]
+            );
+            res.json({ message: "Token Guardado" });
+        } catch (error) {
+            // Manejo de errores
+            console.error("Error al actualizar token:", error);
+            res.status(400).json({ message: "Error al procesar la solicitud de actualización." });
+        } 
+
+    }
+};
+
+
+
+
 
