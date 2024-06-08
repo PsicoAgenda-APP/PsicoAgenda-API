@@ -190,6 +190,8 @@ export const cambiarContrasena = async (req, res) => {
 
 export const eliminarUsuario = (req, res) => res.send("Borrando usuarios");
 
+// No se esta usando
+
 export const getDetallesCitas = async (req, res) => {
     try {
         const sqlQuery = `
@@ -212,7 +214,6 @@ export const getDetallesCitas = async (req, res) => {
             INNER JOIN Usuario up2 ON p.IdUsuario = up2.IdUsuario
             INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
             INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
-            WHERE ec.IdEstadoCita = 2;
             
         `;
 
@@ -223,6 +224,8 @@ export const getDetallesCitas = async (req, res) => {
         res.status(500).json({ message: "Error al obtener detalles de citas." });
     }
 };
+
+// Historial Citas Pacientes
 
 export const getDetallesCitasById = async (req, res) => {
     try {
@@ -249,7 +252,7 @@ export const getDetallesCitasById = async (req, res) => {
     INNER JOIN Usuario up2 ON p.IdUsuario = up2.IdUsuario
     INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
     INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
-    WHERE pc.IdPaciente = ?;
+    WHERE pc.IdPaciente = ? AND ec.IdEstadoCita = 2;
     
         `;
 
