@@ -212,7 +212,7 @@ export const getDetallesCitas = async (req, res) => {
             INNER JOIN Usuario up2 ON p.IdUsuario = up2.IdUsuario
             INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
             INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
-            WHERE ec.EstadoCita = 2;
+            WHERE ec.IdEstadoCita = 2;
             
         `;
 
