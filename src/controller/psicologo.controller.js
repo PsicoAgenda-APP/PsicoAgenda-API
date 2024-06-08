@@ -259,7 +259,8 @@ export const historial_psicologo = async (req, res) => {
         c.Diagnostico,
         c.Tratamiento,
         CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre_Paciente,
-        ec.DescripcionEstado AS estado_cita
+        ec.DescripcionEstado AS estado_cita,
+        pc.IdPaciente
     FROM
         Cita c
     INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
