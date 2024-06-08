@@ -50,12 +50,26 @@ export const obtenerIdUsuario = async (req, res) => {
             const [result] = await connection.query("SELECT * FROM Psicologo p WHERE IdUsuario = ?;", [IdUsuario]);
             res.json(result);
         }
-       
+
     } catch (error) {
         console.error("Error al obtener usuarios:", error);
         res.status(500).json({ message: "Error al obtener usuarios." });
     }
 };
+
+export const datosPersona = async (req, res) => {
+    const { IdPersona } = req.query;
+    try {
+
+        const [result] = await connection.query("SELECT * FROM Persona WHERE IdPersona = ?;", [IdPersona]);
+        res.json(result);
+
+    } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        res.status(500).json({ message: "Error al obtener usuarios." });
+    }
+};
+
 
 export const insertarUsuario = async (req, res) => {
     try {
@@ -92,7 +106,7 @@ export const insertarUsuario = async (req, res) => {
             CorreoElectronico === "" ||
             Contrasena === "" ||
             IdTipoUsuario === "" ||
-            Rut === "" 
+            Rut === ""
         ) {
             return res
                 .status(400)
@@ -128,7 +142,7 @@ export const insertarUsuario = async (req, res) => {
             [CorreoElectronico, Contrasena, idPersona, IdTipoUsuario]
         );
 
-        
+
 
 
         // Enviar respuesta al cliente con un mensaje de éxito
@@ -172,7 +186,7 @@ export const cambiarContrasena = async (req, res) => {
         res.status(500).json({ message: "Error al cambiar la contraseña." });
     }
 };
-    
+
 
 export const eliminarUsuario = (req, res) => res.send("Borrando usuarios");
 

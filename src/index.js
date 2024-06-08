@@ -4,6 +4,8 @@ import usuariosRoutes from './routes/usuarios.routes.js'
 import psicologosRoutes from './routes/psicologo.routes.js'
 import pacientesRoutes from './routes/paciente.routes.js'
 import webpayController from './controller/webpay.controller.js';
+import emailController from './controller/email.controller.js';
+
 
 const app = express();
 
@@ -14,6 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/api/v1/transbank', webpayController);
+app.use('/api/v1/email', emailController);
 app.use(usuariosRoutes)
 app.use(psicologosRoutes)
 app.use(pacientesRoutes)
