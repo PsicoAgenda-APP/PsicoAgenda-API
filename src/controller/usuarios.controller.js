@@ -156,7 +156,7 @@ export const insertarUsuario = async (req, res) => {
 
 
 export const cambiarContrasena = async (req, res) => {
-    const { CorreoElectronico, NuevaContrasena } = req.body;
+    const { CorreoElectronico, NuevaContrasena } = req.query;
 
     if (!CorreoElectronico || !NuevaContrasena) {
         return res.status(400).json({
