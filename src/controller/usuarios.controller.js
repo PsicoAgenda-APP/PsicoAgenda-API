@@ -239,6 +239,8 @@ export const getDetallesCitasById = async (req, res) => {
         c.HoraCita AS hora,
         CONCAT(pp.PrimerNombre, ' ', pp.SegundoNombre, ' ', pp.ApellidoPaterno, ' ', pp.ApellidoMaterno) AS nombre_paciente,
         pp.Rut AS rut_paciente,
+        DATE_FORMAT(pp.FechaNacimiento, '%d-%m-%Y') AS FechaNacimiento,
+        FLOOR(DATEDIFF(CURRENT_DATE, pp.FechaNacimiento) / 365) AS Edad,
         c.Diagnostico,
         c.Tratamiento,
         CONCAT(pp2.PrimerNombre, ' ', pp2.SegundoNombre, ' ', pp2.ApellidoPaterno, ' ', pp2.ApellidoMaterno) AS nombre_psicologo,
