@@ -345,6 +345,55 @@ export const saveToken = async (req, res) => {
     }
 };
 
+export const mantendorBuscar = async (req, res) => {
+    const { Criterio, Dato } = req.query;
+    try {
+        if (Criterio == 1) {
+            const [result] = await connection.query(
+                `SELECT 
+                    c.IdCita,
+                    DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS FechaCita,
+                    DATE_FORMAT(c.HoraCita, '%H:%i') as HoraCita,
+                    CONCAT(pp.PrimerNombre, ' ', pp.ApellidoPaterno) AS NombrePaciente,
+                    CONCAT(pp2.PrimerNombre, ' ', pp2.ApellidoPaterno) AS NombrePsicologo,
+                    ec.DescripcionEstado
+                    FROM Cita c
+                    INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
+                    INNER JOIN Usuario up ON pc.IdUsuario = up.IdUsuario
+                    INNER JOIN Persona pp ON up.IdPersona = pp.IdPersona
+                    INNER JOIN Psicologo p ON c.IdPsicologo = p.IdPsicologo
+                    INNER JOIN Usuario up2 ON p.IdUsuario = up2.IdUsuario
+                    INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
+                    INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
+                    WHERE c.IdCita = ?`, [Dato]);
+            res.json(result);
+        } else if (Criterio == 2) {
+            const [result] = await connection.query(
+                `SELECT 
+                    c.IdCita,
+                    DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS FechaCita,
+                    DATE_FORMAT(c.HoraCita, '%H:%i') as HoraCita,
+                    CONCAT(pp.PrimerNombre, ' ', pp.ApellidoPaterno) AS NombrePaciente,
+                    CONCAT(pp2.PrimerNombre, ' ', pp2.ApellidoPaterno) AS NombrePsicologo,
+                    ec.DescripcionEstado
+                    FROM Cita c
+                    INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
+                    INNER JOIN Usuario up ON pc.IdUsuario = up.IdUsuario
+                    INNER JOIN Persona pp ON up.IdPersona = pp.IdPersona
+                    INNER JOIN Psicologo p ON c.IdPsicologo = p.IdPsicologo
+                    INNER JOIN Usuario up2 ON p.IdUsuario = up2.IdUsuario
+                    INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
+                    INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
+                    WHERE pp.Rut = ?`, [Dato]);
+            res.json(result);
+        }
+
+    } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        res.status(500).json({ message: "Error al obtener usuarios." });
+    }
+};
+
 
 
 
