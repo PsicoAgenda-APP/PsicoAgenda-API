@@ -146,47 +146,68 @@ export const actualizarPsicologo = async (req, res) => {
     try {
         // Extraer los datos del cuerpo de la solicitud
         const {
-            IdPsicologo, // Se necesita el ID del psicólogo para identificar qué psicólogo actualizar
+            IdUsuario, 
+            IdPersona,
+            IdDireccion,
             Calle,
             Numero,
             IdComuna,
-            CorreoElectronico,
             ValorSesion,
-            Telefono
+            Telefono,
+            Descripcion,
+            IdEspecialidad,
+            PrimerNombre,
+            SegundoNombre,
+            ApellidoPaterno,
+            ApellidoMaterno
         } = req.body;
 
         console.log("Datos del cuerpo de la solicitud:", req.body);
 
-        // Verificar si algún campo para actualizar está presente en la solicitud
-        if (
-            !IdPsicologo ||
-            (!Calle && !Numero && !IdComuna && !CorreoElectronico && !ValorSesion && !Telefono)
-        ) {
-            return res.status(400).json({ message: "Faltan campos para actualizar." });
-        }
-
         // Inicializar array para almacenar los valores a actualizar en la base de datos
         const valoresActualizados = [];
+        const valoresDireccion = []
+        const valoresPersona = []
 
         // Actualizar dirección si se proporcionan datos de dirección
         if (Calle && Numero && IdComuna) {
-            valoresActualizados.push(`Calle = '${Calle}'`, `Numero = '${Numero}'`, `IdComuna = '${IdComuna}'`);
+            valoresDireccion.push(`Calle = '${Calle}'`, `Numero = ${Numero}`, `IdComuna = ${IdComuna}`);
         }
 
-        // Actualizar correo electrónico si se proporciona
-        if (CorreoElectronico) {
-            valoresActualizados.push(`CorreoElectronico = '${CorreoElectronico}'`);
+        if (PrimerNombre) {
+            valoresPersona.push(`PrimerNombre = '${PrimerNombre}'`);
+        }
+
+        if (SegundoNombre) {
+            valoresPersona.push(`SegundoNombre = '${SegundoNombre}'`);                
+        }
+
+        if (ApellidoPaterno) {
+            valoresPersona.push(`ApellidoPaterno = '${ApellidoPaterno}'`);               
+        }
+
+        if (ApellidoMaterno) {
+            valoresPersona.push(`ApellidoMaterno = '${ApellidoMaterno}'`);
         }
 
         // Actualizar valor de sesión si se proporciona
         if (ValorSesion) {
-            valoresActualizados.push(`ValorSesion = '${ValorSesion}'`);
+            valoresActualizados.push(`ValorSesion = ${ValorSesion}`);
         }
 
         // Actualizar teléfono si se proporciona
         if (Telefono) {
-            valoresActualizados.push(`Telefono = '${Telefono}'`);
+            valoresPersona.push(`Telefono = '${Telefono}'`);
         }
+
+        if (Descripcion) {
+            valoresActualizados.push(`Descripcion = '${Descripcion}'`);
+        }
+
+        if (IdEspecialidad) {
+            valoresActualizados.push(`IdEspecialidad= ${IdEspecialidad}`);
+        }
+
 
         // Si no hay campos para actualizar, enviar un mensaje de error
         if (valoresActualizados.length === 0) {
@@ -195,8 +216,18 @@ export const actualizarPsicologo = async (req, res) => {
 
         // Realizar la actualización en la base de datos
         await connection.query(
-            `UPDATE Psicologo SET ${valoresActualizados.join(', ')} WHERE IdPsicologo = ?`,
-            [IdPsicologo]
+            `UPDATE Psicologo SET ${valoresActualizados.join(', ')} WHERE IdUsuario = ?`,
+            [IdUsuario]
+        );
+
+        await connection.query(
+            `UPDATE Persona SET ${valoresPersona.join(', ')} WHERE IdPersona = ?`,
+            [IdPersona]
+        );
+
+        await connection.query(
+            `UPDATE Direccion SET ${valoresDireccion.join(', ')} WHERE IdDireccion = ?`,
+            [IdDireccion]
         );
 
         // Enviar respuesta al cliente con un mensaje de éxito
@@ -323,6 +354,27 @@ export const atenciones_psicologo = async (req, res) => {
     } catch (error) {
         console.error("Error al obtener el historial de citas:", error.message); // Detalle del error
         res.status(500).json({ message: "Error al obtener el historial de citas: " + error.message }); // Detalle del error
+    }
+};
+
+export const traerEspecialidad = async (req, res) => {
+    const { NombreEspecialidad } = req.query;
+    try {
+        const [result] = await connection.query("SELECT * FROM Especialidad WHERE NombreEspecialidad = ?", [NombreEspecialidad]);
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener Especilidad:", error);
+        res.status(500).json({ message: "Error al obtener Especilidad." });
+    }
+};
+
+export const especialidades = async (req, res) => {
+    try {
+        const [result] = await connection.query("SELECT * FROM Especialidad");
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener Especilidad:", error);
+        res.status(500).json({ message: "Error al obtener Especilidad." });
     }
 };
 

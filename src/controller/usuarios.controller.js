@@ -394,7 +394,77 @@ export const mantendorBuscar = async (req, res) => {
     }
 };
 
+export const mantendorUsuario = async (req, res) => {
+    const { Criterio, Dato } = req.query;
+    try {
+        if (Criterio == 1) {
+            const [result] = await connection.query(
+                `SELECT 
+                    u.IdTipoUsuario,
+                    p.IdPersona,
+                    d.IdDireccion,
+                    p.PrimerNombre,
+                    p.SegundoNombre,
+                    p.ApellidoPaterno,
+                    p.ApellidoMaterno,
+                    p.Telefono,
+                    d.Calle,
+                    d.Numero,
+                    c.NombreComuna,
+                    ps.ValorSesion,
+                    ps.Descripcion,
+                    e.NombreEspecialidad
+                    FROM Persona p
+                    INNER JOIN Usuario u ON u.IdPersona = p.IdPersona
+                    INNER JOIN Direccion d ON p.IdDireccion = d.IdDireccion
+                    INNER JOIN Comuna c ON c.IdComuna = d.IdComuna
+                    LEFT JOIN Psicologo ps ON u.IdUsuario = ps.IdUsuario
+                    LEFT JOIN Especialidad e ON e.IdEspecialidad = ps.IdEspecialidad
+                    WHERE u.IdUsuario = ?`, [Dato]);
+            res.json(result);
+        } else if (Criterio == 2) {
+            const [result] = await connection.query(
+                `SELECT 
+                    u.IdTipoUsuario,
+                    p.IdPersona,
+                    d.IdDireccion,
+                    p.PrimerNombre,
+                    p.SegundoNombre,
+                    p.ApellidoPaterno,
+                    p.ApellidoMaterno,
+                    p.Telefono,
+                    d.Calle,
+                    d.Numero,
+                    c.NombreComuna,
+                    ps.ValorSesion,
+                    ps.Descripcion,
+                    e.NombreEspecialidad
+                    FROM Persona p
+                    INNER JOIN Usuario u ON u.IdPersona = p.IdPersona
+                    INNER JOIN Direccion d ON p.IdDireccion = d.IdDireccion
+                    INNER JOIN Comuna c ON c.IdComuna = d.IdComuna
+                    LEFT JOIN Psicologo ps ON u.IdUsuario = ps.IdUsuario
+                    LEFT JOIN Especialidad e ON e.IdEspecialidad = ps.IdEspecialidad
+                    WHERE p.Rut = ?`, [Dato]);
+            res.json(result);
+        }
 
+    } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        res.status(500).json({ message: "Error al obtener usuarios." });
+    }
+};
+
+export const traerComunas = async (req, res) => {
+    const { NombreComuna } = req.query;
+    try {
+        const [result] = await connection.query("SELECT * FROM Comuna WHERE NombreComuna = ?", [NombreComuna]);
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener comuna:", error);
+        res.status(500).json({ message: "Error al obtener comuna." });
+    }
+};
 
 
 

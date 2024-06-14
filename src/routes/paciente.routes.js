@@ -9,7 +9,7 @@ router.get('/usuarios/get_pacientes', get_pacientes);
 
 router.post('/usuarios/insertar_paciente', insertarPaciente);
 
-router.patch('/usuarios/patch_paciente', actualizarPaciente);
+router.post('/usuarios/patch_paciente', actualizarPaciente);
 
 router.get('/paciente/agendarCita', updateCita);
 

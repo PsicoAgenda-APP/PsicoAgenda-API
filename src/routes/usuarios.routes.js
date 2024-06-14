@@ -2,7 +2,7 @@ import { Router } from "express";
 import { obtenerIdUsuario, traerUsuarios, cambiarContrasena, 
     eliminarUsuario, loginUsuario, insertarUsuario, getDetallesCitas, 
     getDetallesCitasById, getProximaCitaById, datosPersona, 
-    saveToken, mantendorBuscar } from "../controller/usuarios.controller.js";
+    saveToken, mantendorBuscar, mantendorUsuario, traerComunas } from "../controller/usuarios.controller.js";
 
 const router = Router();
 
@@ -10,6 +10,9 @@ router.get('/usuarioooo', traerUsuarios);
 
 // Ruta para consultar inicio de sesión
 router.get('/usuarios/login', loginUsuario);
+
+router.get('/usuarios/comuna', traerComunas);
+
 
 // Ruta para crear un nuevo usuario
 router.post('/usuarios/registro_usuario', insertarUsuario);
@@ -31,6 +34,8 @@ router.get('/usuarios/datosPaciente', datosPersona);
 router.get('/usuarios/guadarToken', saveToken);
 
 router.get('/admin/buscarCita', mantendorBuscar);
+
+router.get('/admin/buscarUsuario', mantendorUsuario);
 
 
 export default router;

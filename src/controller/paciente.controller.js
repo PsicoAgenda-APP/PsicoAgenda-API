@@ -102,57 +102,60 @@ export const actualizarPaciente = async (req, res) => {
     try {
         // Extraer los datos del cuerpo de la solicitud
         const {
-            idPaciente,
+            IdPersona,
+            IdDireccion,
             Calle,
             Numero,
             IdComuna,
             Telefono,
-            CorreoElectronico
+            PrimerNombre,
+            SegundoNombre,
+            ApellidoPaterno,
+            ApellidoMaterno
         } = req.body;
 
         console.log("Datos del cuerpo de la solicitud:", req.body);
 
-        // Verificar si se proporcionó el ID del paciente
-        if (!idPaciente) {
-            return res.status(400).json({ message: "Falta el ID del paciente en la solicitud." });
+
+        // Inicializar array para almacenar los valores a actualizar en la base de datos
+        const valoresDireccion = []
+        const valoresPersona = []
+
+        // Actualizar dirección si se proporcionan datos de dirección
+        if (Calle && Numero && IdComuna) {
+            valoresDireccion.push(`Calle = '${Calle}'`, `Numero = ${Numero}`, `IdComuna = ${IdComuna}`);
         }
 
-        // Inicializar array para almacenar las consultas de actualización
-        const consultasActualizacion = [];
+        if (PrimerNombre) {
+            valoresPersona.push(`PrimerNombre = '${PrimerNombre}'`);
+        }
 
-        // Construir las consultas de actualización para los campos específicos proporcionados
-        if (Calle) {
-            consultasActualizacion.push("UPDATE Direccion SET Calle = ? WHERE IdDireccion = (SELECT IdDireccion FROM Persona WHERE IdPersona = (SELECT IdPersona FROM Usuario WHERE IdUsuario = (SELECT IdUsuario FROM Paciente WHERE idPaciente = ?)))");
+        if (SegundoNombre) {
+            valoresPersona.push(`SegundoNombre = '${SegundoNombre}'`);                
         }
-        if (Numero) {
-            consultasActualizacion.push("UPDATE Direccion SET Numero = ? WHERE IdDireccion = (SELECT IdDireccion FROM Persona WHERE IdPersona = (SELECT IdPersona FROM Usuario WHERE IdUsuario = (SELECT IdUsuario FROM Paciente WHERE idPaciente = ?)))");
+
+        if (ApellidoPaterno) {
+            valoresPersona.push(`ApellidoPaterno = '${ApellidoPaterno}'`);               
         }
-        if (IdComuna) {
-            consultasActualizacion.push("UPDATE Direccion SET IdComuna = ? WHERE IdDireccion = (SELECT IdDireccion FROM Persona WHERE IdPersona = (SELECT IdPersona FROM Usuario WHERE IdUsuario = (SELECT IdUsuario FROM Paciente WHERE idPaciente = ?)))");
+
+        if (ApellidoMaterno) {
+            valoresPersona.push(`ApellidoMaterno = '${ApellidoMaterno}'`);
         }
+
+        // Actualizar teléfono si se proporciona
         if (Telefono) {
-            consultasActualizacion.push("UPDATE Persona SET Telefono = ? WHERE IdPersona = (SELECT IdPersona FROM Usuario WHERE IdUsuario = (SELECT IdUsuario FROM Paciente WHERE idPaciente = ?))");
-        }
-        if (CorreoElectronico) {
-            consultasActualizacion.push("UPDATE Usuario SET CorreoElectronico = ? WHERE IdUsuario = (SELECT IdUsuario FROM Paciente WHERE idPaciente = ?)");
+            valoresPersona.push(`Telefono = '${Telefono}'`);
         }
 
-        // Ejecutar todas las consultas de actualización necesarias
-        await Promise.all(
-            consultasActualizacion.map(async (consulta) => {
-                await connection.query(consulta, [
-                    Calle,
-                    idPaciente,
-                    Numero,
-                    idPaciente,
-                    IdComuna,
-                    idPaciente,
-                    Telefono,
-                    idPaciente,
-                    CorreoElectronico,
-                    idPaciente
-                ]);
-            })
+        // Realizar la actualización en la base de datos
+        await connection.query(
+            `UPDATE Persona SET ${valoresPersona.join(', ')} WHERE IdPersona = ?`,
+            [IdPersona]
+        );
+
+        await connection.query(
+            `UPDATE Direccion SET ${valoresDireccion.join(', ')} WHERE IdDireccion = ?`,
+            [IdDireccion]
         );
 
         // Enviar respuesta al cliente con un mensaje de éxito
@@ -160,9 +163,8 @@ export const actualizarPaciente = async (req, res) => {
     } catch (error) {
         // Manejo de errores
         console.error("Error al actualizar paciente:", error);
-        res.status(400).json({ message: "Error al procesar la solicitud de actualización." });
-    }    
-    
+        res.status(400).json({ message: "Error al procesar la solicitud de actualización." }); // Enviar respuesta de error al cliente
+    }
 };
 
 export const updateCita = async (req, res) => { 
