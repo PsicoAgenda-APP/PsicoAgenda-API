@@ -400,6 +400,7 @@ export const mantendorUsuario = async (req, res) => {
         if (Criterio == 1) {
             const [result] = await connection.query(
                 `SELECT 
+                    u.IdUsuario,
                     u.IdTipoUsuario,
                     p.IdPersona,
                     d.IdDireccion,
@@ -425,6 +426,7 @@ export const mantendorUsuario = async (req, res) => {
         } else if (Criterio == 2) {
             const [result] = await connection.query(
                 `SELECT 
+                    u.IdUsuario,
                     u.IdTipoUsuario,
                     p.IdPersona,
                     d.IdDireccion,
