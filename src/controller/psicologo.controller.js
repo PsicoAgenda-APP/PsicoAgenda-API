@@ -16,6 +16,44 @@ export const get_psicologos = async (req, res) => {
     }
 };
 
+export const buscarPsicologos = async (req, res) => {
+    const { Criterio, Dato, Dato2 } = req.query;
+    try {
+        if (Criterio == 1) {
+            const [result] = await connection.query(
+                `SELECT ps.IdPsicologo,
+                    CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre, 
+                    e.NombreEspecialidad, u.CorreoElectronico, ps.ValorSesion, ps.Descripcion FROM Psicologo ps
+                    INNER JOIN Especialidad e ON ps.IdEspecialidad = e.IdEspecialidad 
+                    INNER JOIN Usuario u ON ps.IdUsurio = u.IdUsuario INNER JOIN Persona p ON p.IdPersona = u.IdPersona
+                    WHERE CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) 
+                    LIKE '%` + [Dato] + `%'`);
+            res.json(result);
+        } else if (Criterio == 2) {
+            const [result] = await connection.query(
+                `SELECT ps.IdPsicologo,
+                    CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre, 
+                    e.NombreEspecialidad, u.CorreoElectronico, ps.ValorSesion, ps.Descripcion FROM Psicologo ps
+                    INNER JOIN Especialidad e ON ps.IdEspecialidad = e.IdEspecialidad 
+                    INNER JOIN Usuario u ON ps.IdUsuario = u.IdUsuario INNER JOIN Persona p ON p.IdPersona = u.IdPersona
+                    WHERE e.NombreEspecialidad = ?`, [Dato]);
+            res.json(result);
+        } else if (Criterio == 3) {
+            const [result] = await connection.query(
+                `SELECT ps.IdPsicologo,
+                    CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre, 
+                    e.NombreEspecialidad, u.CorreoElectronico, ps.ValorSesion, ps.Descripcion FROM Psicologo ps
+                    INNER JOIN Especialidad e ON ps.IdEspecialidad = e.IdEspecialidad 
+                    INNER JOIN Usuario u ON ps.IdUsuario = u.IdUsuario INNER JOIN Persona p ON p.IdPersona = u.IdPersona
+                    WHERE CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) 
+                    LIKE '%` + [Dato] + `%' AND e.NombreEspecialidad = ?`, [Dato2]);
+            res.json(result);      
+        }
+    } catch (error) {
+        console.error("Error al buscar Psicologos:", error);
+        res.status(500).json({ message: "Error al buscar Psicologos." });
+    }
+};
 
 export const horas_psicologo = async (req, res) => {
     const { IdPsicologo, FechaCita } = req.query;

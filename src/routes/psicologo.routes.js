@@ -1,12 +1,16 @@
 import { Router } from "express";
 import {insertarPsicologo, get_psicologos, actualizarPsicologo, 
     datos_psicologo, horas_psicologo, citas_psicologo, 
-    historial_psicologo, atenciones_psicologo, traerEspecialidad, especialidades} from "../controller/psicologo.controller.js";
+    historial_psicologo, atenciones_psicologo, traerEspecialidad, 
+    especialidades, buscarPsicologos} from "../controller/psicologo.controller.js";
 
 const router = Router();
 
 
 router.get('/psicologos/get_psicologos', get_psicologos);
+
+router.get('/psicologos/buscar_psicologos', buscarPsicologos);
+
 router.get('/psicologos/datos_psicologo', datos_psicologo);
 
 router.get('/psicologos/horas_psicologo', horas_psicologo);
