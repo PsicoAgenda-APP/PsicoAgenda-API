@@ -25,7 +25,7 @@ export const buscarPsicologos = async (req, res) => {
                     CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre, 
                     e.NombreEspecialidad, u.CorreoElectronico, ps.ValorSesion, ps.Descripcion FROM Psicologo ps
                     INNER JOIN Especialidad e ON ps.IdEspecialidad = e.IdEspecialidad 
-                    INNER JOIN Usuario u ON ps.IdUsurio = u.IdUsuario INNER JOIN Persona p ON p.IdPersona = u.IdPersona
+                    INNER JOIN Usuario u ON ps.IdUsuario = u.IdUsuario INNER JOIN Persona p ON p.IdPersona = u.IdPersona
                     WHERE CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) 
                     LIKE '%` + [Dato] + `%'`);
             res.json(result);
