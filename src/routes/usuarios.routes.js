@@ -2,7 +2,7 @@ import { Router } from "express";
 import { obtenerIdUsuario, traerUsuarios, cambiarContrasena, 
     eliminarUsuario, loginUsuario, insertarUsuario, getDetallesCitas, 
     getDetallesCitasById, getProximaCitaById, datosPersona, 
-    saveToken, mantendorBuscar, mantendorUsuario, traerComunas } from "../controller/usuarios.controller.js";
+    saveToken, mantendorBuscar, mantendorUsuario, traerComunas, comunas} from "../controller/usuarios.controller.js";
 
 const router = Router();
 
@@ -12,6 +12,7 @@ router.get('/usuarioooo', traerUsuarios);
 router.get('/usuarios/login', loginUsuario);
 
 router.get('/usuarios/comuna', traerComunas);
+router.get('/usuarios/todasLasComunas', comunas);
 
 
 // Ruta para crear un nuevo usuario

@@ -468,5 +468,16 @@ export const traerComunas = async (req, res) => {
     }
 };
 
+export const comunas = async (req, res) => {
+    try {
+        const [result] = await connection.query("SELECT * FROM Comuna");
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener comuna:", error);
+        res.status(500).json({ message: "Error al obtener comuna." });
+    }
+};
+
+
 
 
