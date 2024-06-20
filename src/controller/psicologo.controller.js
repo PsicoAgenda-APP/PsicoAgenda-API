@@ -62,7 +62,8 @@ export const horas_psicologo = async (req, res) => {
             ("SELECT c.IdCita, DATE_FORMAT(c.HoraCita, '%H:%i') as HoraCita FROM Cita c " +
                 "WHERE c.IdPsicologo = ? AND " +
                 "DATE_FORMAT(c.FechaCita, '%d-%m-%Y') = ? " +
-                "AND c.IdEstadoCita = 3",[IdPsicologo, FechaCita])
+                "AND c.IdEstadoCita = 3 " + 
+                "ORDER BY c.HoraCita;",[IdPsicologo, FechaCita])
         res.json(result);
     } catch (error) {
         console.error("Error al obtener Horas:", error);
