@@ -198,7 +198,7 @@ export const getDetallesCitas = async (req, res) => {
         SELECT
                 up.IdUsuario,
                 DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
-                c.HoraCita AS hora,
+                DATE_FORMAT(c.HoraCita, '%H:%i') AS hora,
                 CONCAT(pp.PrimerNombre, ' ', pp.SegundoNombre, ' ', pp.ApellidoPaterno, ' ', pp.ApellidoMaterno) AS nombre_paciente,
                 pp.Rut AS rut_paciente,
                 c.Diagnostico,
@@ -236,7 +236,7 @@ export const getDetallesCitasById = async (req, res) => {
         SELECT
         up.IdUsuario,
         DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
-        c.HoraCita AS hora,
+        DATE_FORMAT(c.HoraCita, '%H:%i') AS hora,
         CONCAT(pp.PrimerNombre, ' ', pp.SegundoNombre, ' ', pp.ApellidoPaterno, ' ', pp.ApellidoMaterno) AS nombre_paciente,
         pp.Rut AS rut_paciente,
         DATE_FORMAT(pp.FechaNacimiento, '%d-%m-%Y') AS FechaNacimiento,
@@ -274,6 +274,52 @@ export const getDetallesCitasById = async (req, res) => {
     }
 };
 
+export const citasAsignadas = async (req, res) => {
+    try {
+        const { IdPaciente } = req.query;
+
+        // Consulta SQL para obtener las citas asociadas al usuario
+        const sqlQuery = `
+        SELECT
+        up.IdUsuario,
+        DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
+        DATE_FORMAT(c.HoraCita, '%H:%i') AS hora,
+        CONCAT(pp.PrimerNombre, ' ', pp.SegundoNombre, ' ', pp.ApellidoPaterno, ' ', pp.ApellidoMaterno) AS nombre_paciente,
+        pp.Rut AS rut_paciente,
+        DATE_FORMAT(pp.FechaNacimiento, '%d-%m-%Y') AS FechaNacimiento,
+        FLOOR(DATEDIFF(CURRENT_DATE, pp.FechaNacimiento) / 365) AS Edad,
+        c.Diagnostico,
+        c.Tratamiento,
+        CONCAT(pp2.PrimerNombre, ' ', pp2.SegundoNombre, ' ', pp2.ApellidoPaterno, ' ', pp2.ApellidoMaterno) AS nombre_psicologo,
+        ec.DescripcionEstado AS estado_cita
+    FROM
+        Cita c
+    INNER JOIN Paciente pc ON c.IdPaciente = pc.IdPaciente
+    INNER JOIN Usuario up ON pc.IdUsuario = up.IdUsuario
+    INNER JOIN Persona pp ON up.IdPersona = pp.IdPersona
+    INNER JOIN Psicologo p ON c.IdPsicologo = p.IdPsicologo
+    INNER JOIN Usuario up2 ON p.IdUsuario = up2.IdUsuario
+    INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
+    INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
+    WHERE pc.IdPaciente = ? AND ec.IdEstadoCita = 1;
+    
+        `;
+
+        // Ejecutar la consulta SQL y obtener el resultado
+        const [result] = await connection.query(sqlQuery, [IdPaciente]);
+
+        // Verificar si se encontraron citas asociadas al usuario
+        if (result.length === 0) {
+            return res.status(404).json({ message: "No se encontraron citas para este usuario." });
+        }
+
+        // Enviar el resultado como respuesta
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener detalles de citas:", error);
+        res.status(500).json({ message: "Error al obtener detalles de citas." });
+    }
+};
 
 //Próxima Cita Paciente por IdPaciente
 
@@ -285,7 +331,7 @@ export const getProximaCitaById = async (req, res) => {
         SELECT
             up.IdUsuario,
             DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
-            c.HoraCita AS hora,
+            DATE_FORMAT(c.HoraCita, '%H:%i') AS hora,
             CONCAT(pp.PrimerNombre, ' ', pp.SegundoNombre, ' ', pp.ApellidoPaterno, ' ', pp.ApellidoMaterno) AS nombre_paciente,
             pp.Rut AS rut_paciente,
             c.Diagnostico,
