@@ -166,11 +166,43 @@ export const insertarPsicologo = async (req, res) => {
         const idUsuario = usuarioResult.insertId; // Obtener el ID del usuario insertado
 
         // Inserción en la tabla Psicologo
-        await connection.query(
-            "INSERT INTO Psicologo (ValorSesion, IdEspecialidad, IdUsuario) VALUES (?, ?, ?)",
-            [ValorSesion, IdEspecialidad, idUsuario]
+        const [psicologoResult] = await connection.query(
+            "INSERT INTO Psicologo (ValorSesion, IdEspecialidad, IdUsuario, Descripcion) VALUES (?, ?, ?, ?)",
+            [ValorSesion, IdEspecialidad, idUsuario, 'Psicologo Especialista']
         );
 
+        const idPsicologo = psicologoResult.insertId;
+
+        await connection.query(
+            `INSERT INTO Cita (FechaCita, HoraCita, Duracion, Diagnostico, Tratamiento, IdPaciente, IdEstadoCita, IdPago, IdPsicologo)
+                SELECT
+                    FechaCita,
+                    HoraCita,
+                    '1 hora' AS Duracion,
+                    NULL AS Diagnostico,
+                    NULL AS Tratamiento,
+                    1 AS IdPaciente,
+                    3 AS IdEstadoCita,
+                    1 AS IdPago,
+                    @idPsicologo AS IdPsicologo
+                FROM
+                    Psicologo p,
+                    (SELECT '2024-06-24' AS FechaCita UNION ALL
+                    SELECT '2024-06-25' UNION ALL
+                    SELECT '2024-06-26' UNION ALL
+                    SELECT '2024-06-27' UNION ALL
+                    SELECT '2024-06-28') AS Fechas,
+                    (SELECT '08:00:00' AS HoraCita UNION ALL
+                    SELECT '09:30:00' UNION ALL
+                    SELECT '11:00:00' UNION ALL
+                    SELECT '12:30:00' UNION ALL
+                    SELECT '14:00:00' UNION ALL
+                    SELECT '15:30:00' UNION ALL
+                    SELECT '17:00:00' UNION ALL
+                    SELECT '18:30:00' UNION ALL
+                    SELECT '20:00:00' UNION ALL
+                    SELECT '21:30:00') AS Horas;` [idPsicologo]);
+    
         // Enviar respuesta al cliente con un mensaje de éxito
         res.status(201).json({ message: "Psicologo creado correctamente." });
     } catch (error) {
