@@ -317,6 +317,7 @@ export const citas_psicologo = async (req, res) => {
         const sqlQuery = `
         SELECT
         c.IdCita,
+        pc.IdPaciente,
         DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS FechaCita,
         DATE_FORMAT(c.HoraCita, '%H:%i') AS HoraCita,
         c.Diagnostico,
@@ -357,6 +358,7 @@ export const historial_psicologo = async (req, res) => {
         const sqlQuery = `
         SELECT
         c.IdCita,
+        pc.IdPaciente,
         DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS FechaCita,
         DATE_FORMAT(c.HoraCita, '%H:%i') AS HoraCita,
         c.Diagnostico,
@@ -397,6 +399,7 @@ export const atenciones_psicologo = async (req, res) => {
         const sqlQuery = `
         SELECT
         c.IdCita,
+        pc.IdPaciente,
         DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS FechaCita,
         DATE_FORMAT(c.HoraCita, '%H:%i') AS HoraCita,
         c.Diagnostico,
