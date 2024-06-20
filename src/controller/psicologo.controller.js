@@ -184,7 +184,7 @@ export const insertarPsicologo = async (req, res) => {
                     1 AS IdPaciente,
                     3 AS IdEstadoCita,
                     1 AS IdPago,
-                    @idPsicologo AS IdPsicologo
+                    IdPsicologo AS IdPsicologo
                 FROM
                     Psicologo p,
                     (SELECT '2024-06-24' AS FechaCita UNION ALL
@@ -201,7 +201,8 @@ export const insertarPsicologo = async (req, res) => {
                     SELECT '17:00:00' UNION ALL
                     SELECT '18:30:00' UNION ALL
                     SELECT '20:00:00' UNION ALL
-                    SELECT '21:30:00') AS Horas;` [idPsicologo]);
+                    SELECT '21:30:00') AS Horas
+                    WHERE p.IdPsicologo = ?;`, [idPsicologo]);
     
         // Enviar respuesta al cliente con un mensaje de éxito
         res.status(201).json({ message: "Psicologo creado correctamente." });
