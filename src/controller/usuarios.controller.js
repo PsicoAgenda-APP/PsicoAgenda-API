@@ -195,7 +195,8 @@ export const eliminarUsuario = (req, res) => res.send("Borrando usuarios");
 export const getDetallesCitas = async (req, res) => {
     try {
         const sqlQuery = `
-        SELECT
+        SELECT  
+                c.IdCita,
                 up.IdUsuario,
                 DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
                 DATE_FORMAT(c.HoraCita, '%H:%i') AS hora,
@@ -234,6 +235,7 @@ export const getDetallesCitasById = async (req, res) => {
         // Consulta SQL para obtener las citas asociadas al usuario
         const sqlQuery = `
         SELECT
+        c.IdCita,
         up.IdUsuario,
         DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
         DATE_FORMAT(c.HoraCita, '%H:%i') AS hora,
@@ -281,6 +283,7 @@ export const citasAsignadas = async (req, res) => {
         // Consulta SQL para obtener las citas asociadas al usuario
         const sqlQuery = `
         SELECT
+        c.IdCita,
         up.IdUsuario,
         DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
         DATE_FORMAT(c.HoraCita, '%H:%i') AS hora,
@@ -329,6 +332,7 @@ export const getProximaCitaById = async (req, res) => {
 
         const sqlQuery = `
         SELECT
+            c.IdCita,
             up.IdUsuario,
             DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS fecha,
             DATE_FORMAT(c.HoraCita, '%H:%i') AS hora,
