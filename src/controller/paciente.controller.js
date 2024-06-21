@@ -196,7 +196,7 @@ export const updateCita = async (req, res) => {
 export const finalizarCita = async (req, res) => { 
     const { Tratamiento, Diasgnostico, IdCita } = req.query;
 
-    if (!IdPaciente || !IdCita) {
+    if (!IdCita) {
         return res
             .status(400)
             .json({
