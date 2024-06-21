@@ -206,7 +206,7 @@ export const finalizarCita = async (req, res) => {
 
         try {
             await connection.query(
-                "UPDATE Cita SET Cita.Tratamiento = ?, Cita.Diasgnostico = ? WHERE IdCita = ?",
+                "UPDATE Cita SET Cita.Tratamiento = ?, Cita.Diagnostico = ? WHERE IdCita = ?",
                 [Tratamiento, Diasgnostico, IdCita]
             );
             res.json({ message: "Cita Actualizada Correctamente" });
