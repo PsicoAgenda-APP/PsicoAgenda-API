@@ -194,7 +194,7 @@ export const updateCita = async (req, res) => {
 }
 
 export const finalizarCita = async (req, res) => { 
-    const { Tratamiento, Diasgnostico, IdCita } = req.query;
+    const { Tratamiento, Diagnostico, IdCita } = req.query;
 
     if (!IdCita) {
         return res
@@ -207,7 +207,7 @@ export const finalizarCita = async (req, res) => {
         try {
             await connection.query(
                 "UPDATE Cita SET Cita.Tratamiento = ?, Cita.Diagnostico = ? WHERE IdCita = ?",
-                [Tratamiento, Diasgnostico, IdCita]
+                [Tratamiento, Diagnostico, IdCita]
             );
             res.json({ message: "Cita Actualizada Correctamente" });
         } catch (error) {
