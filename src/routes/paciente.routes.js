@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { get_pacientes, insertarPaciente, actualizarPaciente, updateCita } from "../controller/paciente.controller.js";
+import { get_pacientes, insertarPaciente, actualizarPaciente, updateCita, finalizarCita } from "../controller/paciente.controller.js";
 
 
 const router = Router();
@@ -12,6 +12,7 @@ router.post('/usuarios/insertar_paciente', insertarPaciente);
 router.post('/usuarios/patch_paciente', actualizarPaciente);
 
 router.get('/paciente/agendarCita', updateCita);
+router.get('/paciente/finalizarCita', finalizarCita);
 
 
 export default router
