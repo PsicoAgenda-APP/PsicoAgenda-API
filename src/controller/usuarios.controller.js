@@ -436,7 +436,7 @@ export const mantendorBuscar = async (req, res) => {
                     INNER JOIN Usuario up2 ON p.IdUsuario = up2.IdUsuario
                     INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
                     INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
-                    WHERE pp.Rut = ?`, [Dato]);
+                    WHERE pp.Rut = ? OR pp2.Rut = ?`, [Dato, Dato]);
             res.json(result);
         }
 
