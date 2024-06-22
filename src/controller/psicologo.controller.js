@@ -413,7 +413,9 @@ export const atenciones_psicologo = async (req, res) => {
     INNER JOIN Persona p ON u.IdPersona = p.IdPersona
     INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
     WHERE c.IdPsicologo = ? AND c.IdEstadoCita IN (1)
-    ORDER BY c.FechaCita DESC, c.HoraCita DESC;
+    AND (DATE(c.FechaCita) > DATE(NOW()) OR (DATE(c.FechaCita) = DATE(NOW()) 
+    AND TIME(c.HoraCita) >= DATE_SUB(TIME(NOW()), INTERVAL 4 HOUR)))
+    ORDER BY c.FechaCita, c.HoraCita;
     `;
 
         // Ejecutar la consulta SQL y obtener el resultado

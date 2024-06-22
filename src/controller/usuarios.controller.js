@@ -256,8 +256,8 @@ export const getDetallesCitasById = async (req, res) => {
     INNER JOIN Usuario up2 ON p.IdUsuario = up2.IdUsuario
     INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
     INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
-    WHERE pc.IdPaciente = ? AND ec.IdEstadoCita = 2;
-    
+    WHERE pc.IdPaciente = ? AND ec.IdEstadoCita = 2
+    ORDER BY c.FechaCita DESC, c.HoraCita DESC;
         `;
 
         // Ejecutar la consulta SQL y obtener el resultado
@@ -352,7 +352,9 @@ export const getProximaCitaById = async (req, res) => {
         INNER JOIN Persona pp2 ON up2.IdPersona = pp2.IdPersona
         INNER JOIN EstadoCita ec ON c.IdEstadoCita = ec.IdEstadoCita
         WHERE pc.IdPaciente = ? AND ec.DescripcionEstado = 'Asignado'
-        ORDER BY c.FechaCita ASC, c.HoraCita ASC
+        AND (DATE(c.FechaCita) > DATE(NOW()) OR (DATE(c.FechaCita) = DATE(NOW()) 
+        AND TIME(c.HoraCita) >= DATE_SUB(TIME(NOW()), INTERVAL 4 HOUR)))
+        ORDER BY c.FechaCita, c.HoraCita
         LIMIT 1;
         `;
 
