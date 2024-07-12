@@ -19,7 +19,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: '*',
-  }
+  },
+  path: '/socket.io' // Asegúrate de tener esta línea
 });
 
 // Middleware para analizar el cuerpo de la solicitud en formato JSON
@@ -33,7 +34,7 @@ app.use('/api/v1/email', emailController);
 app.use(usuariosRoutes);
 app.use(psicologosRoutes);
 app.use(pacientesRoutes);
-app.use(messageController);
+app.use('/api/v1', messageController); // Asegúrate de que esta línea sea correcta
 
 // Configurar el socket.io
 setupSocket(io);
