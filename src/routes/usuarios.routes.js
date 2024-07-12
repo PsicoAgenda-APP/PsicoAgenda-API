@@ -3,7 +3,8 @@ import { obtenerIdUsuario, traerUsuarios, cambiarContrasena,
     eliminarUsuario, loginUsuario, insertarUsuario, getDetallesCitas, 
     getDetallesCitasById, getProximaCitaById, datosPersona, 
     saveToken, mantendorBuscar, mantendorUsuario, traerComunas, 
-    comunas, citasAsignadas} from "../controller/usuarios.controller.js";
+    comunas, citasAsignadas,
+    idChat} from "../controller/usuarios.controller.js";
 
 const router = Router();
 
@@ -40,6 +41,8 @@ router.get('/usuarios/guadarToken', saveToken);
 router.get('/admin/buscarCita', mantendorBuscar);
 
 router.get('/admin/buscarUsuario', mantendorUsuario);
+
+router.get('/usuarios/datosChat', idChat);
 
 
 export default router;

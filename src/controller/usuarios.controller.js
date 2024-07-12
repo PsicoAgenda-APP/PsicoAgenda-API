@@ -371,10 +371,10 @@ export const getProximaCitaById = async (req, res) => {
     }
 };
 
-export const saveToken = async (req, res) => { 
+export const saveToken = async (req, res) => {
     const { Token, CorreoElectronico } = req.query;
 
-    if (!Token || !CorreoElectronico ) {
+    if (!Token || !CorreoElectronico) {
         return res
             .status(400)
             .json({
@@ -392,7 +392,7 @@ export const saveToken = async (req, res) => {
             // Manejo de errores
             console.error("Error al actualizar token:", error);
             res.status(400).json({ message: "Error al procesar la solicitud de actualización." });
-        } 
+        }
 
     }
 };
@@ -530,6 +530,33 @@ export const comunas = async (req, res) => {
     }
 };
 
+
+export const idChat = async (req, res) => {
+    const { Criterio, Dato } = req.query;
+    try {
+        if (Criterio == 1) {
+            const [result] = await connection.query(
+                `SELECT * FROM Cita 
+                    WHERE IdEstadoCita IN (1, 2)
+                    AND IdPsicologo = ?
+                    GROUP BY IdPaciente
+                    ORDER BY IdPaciente`, [Dato]);
+            res.json(result);
+        } else if (Criterio == 2) {
+            const [result] = await connection.query(
+                `SELECT * FROM Cita 
+                    WHERE IdEstadoCita IN (1, 2)
+                    AND IdPaciente = ?
+                    GROUP BY IdPsicologo
+                    ORDER BY IdPsicologo`, [Dato]);
+            res.json(result);
+        }
+
+    } catch (error) {
+        console.error("Error al obtener datos:", error);
+        res.status(500).json({ message: "Error al obtener datos." });
+    }
+};
 
 
 
