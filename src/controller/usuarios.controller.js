@@ -536,7 +536,13 @@ export const idChat = async (req, res) => {
     try {
         if (Criterio == 1) {
             const [result] = await connection.query(
-                `SELECT * FROM Cita 
+                `SELECT 
+                    c.IdPaciente,
+                    CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre
+                    FROM Cita c 
+                    INNER JOIN Paciente pa ON c.IdPaciente = pa.IdPaciente 
+                    INNER JOIN Usuario u ON pa.IdUsuario = u.IdUsuario 
+                    INNER JOIN Persona p ON p.IdPersona = u.IdPersona
                     WHERE IdEstadoCita IN (1, 2)
                     AND IdPsicologo = ?
                     GROUP BY IdPaciente
@@ -544,11 +550,17 @@ export const idChat = async (req, res) => {
             res.json(result);
         } else if (Criterio == 2) {
             const [result] = await connection.query(
-                `SELECT * FROM Cita 
+                `SELECT
+                    c.IdPsicologo,
+                    CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre
+                    FROM Cita c 
+                    INNER JOIN Psicologo ps ON c.IdPsicologo = ps.IdPsicologo 
+                    INNER JOIN Usuario u ON ps.IdUsuario = u.IdUsuario 
+                    INNER JOIN Persona p ON p.IdPersona = u.IdPersona
                     WHERE IdEstadoCita IN (1, 2)
                     AND IdPaciente = ?
                     GROUP BY IdPsicologo
-                    ORDER BY IdPsicologo`, [Dato]);
+                    ORDER BY IdPsicologo `, [Dato]);
             res.json(result);
         }
 
