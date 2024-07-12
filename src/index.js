@@ -33,7 +33,7 @@ app.use(messageController(io)); // Usa el controlador de mensajes y pasa el obje
 
 
 // Puerto en el que se ejecutará el servidor
-const PORT = process.env.PORT;
+const PORT = 3000//process.env.PORT;
 
 // Iniciar el servidor
 app.listen(PORT, () => {
