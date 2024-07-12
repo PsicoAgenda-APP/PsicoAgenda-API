@@ -5,11 +5,13 @@ const router = express.Router();
 
 // Configuración de transporte para Outlook
 const transporter = nodemailer.createTransport({
-    service: 'Outlook',
+    host: 'mail.psicoagenda.online', // Servidor de correo de tu dominio
+    port: 465, // Usualmente 465 para SSL
+    secure: true, // true para 465
     auth: {
-        user: 'psicoagendaapp@hotmail.com',
-        pass: 'Manchas_15'
-    }
+        user: 'soporte@psicoagenda.online', // tu nueva dirección de correo
+        pass: 'Psico_Agenda2024', // tu contraseña de correo
+    },
 });
 
 // Ruta para enviar correo
