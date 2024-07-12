@@ -537,7 +537,7 @@ export const idChat = async (req, res) => {
         if (Criterio == 1) {
             const [result] = await connection.query(
                 `SELECT 
-                    c.IdPaciente,
+                    u.IdUsuario,
                     CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre
                     FROM Cita c 
                     INNER JOIN Paciente pa ON c.IdPaciente = pa.IdPaciente 
@@ -551,7 +551,7 @@ export const idChat = async (req, res) => {
         } else if (Criterio == 2) {
             const [result] = await connection.query(
                 `SELECT
-                    c.IdPsicologo,
+                    u.IdUsuario,
                     CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre
                     FROM Cita c 
                     INNER JOIN Psicologo ps ON c.IdPsicologo = ps.IdPsicologo 
