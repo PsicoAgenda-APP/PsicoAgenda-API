@@ -218,3 +218,61 @@ export const finalizarCita = async (req, res) => {
 
     }
 }
+
+export const insertarCitas = async (req, res) => {
+    const { fechaInicio, fechaFin } = req.query;
+
+    if (!fechaInicio || !fechaFin) {
+        return res.status(400).json({ message: "Falta información para agendar las citas" });
+    }
+
+    const fechas = [];
+    let currentDate = new Date(fechaInicio);
+    const endDate = new Date(fechaFin);
+
+    while (currentDate <= endDate) {
+        fechas.push(currentDate.toISOString().split('T')[0]);
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    const horas = [
+        '08:00:00', '09:30:00', '11:00:00', '12:30:00',
+        '14:00:00', '15:30:00', '17:00:00', '18:30:00',
+        '20:00:00', '21:30:00'
+    ];
+
+    const valoresInsert = [];
+    const queryInsert = `
+        INSERT INTO Cita (FechaCita, HoraCita, Duracion, Diagnostico, Tratamiento, IdPaciente, IdEstadoCita, IdPago, IdPsicologo)
+        SELECT ?, ?, '1 hora', NULL, NULL, 1, 3, 1, p.IdPsicologo
+        FROM Psicologo p;
+    `;
+
+    for (const fecha of fechas) {
+        for (const hora of horas) {
+            valoresInsert.push([fecha, hora]);
+        }
+    }
+
+    try {
+        for (const valores of valoresInsert) {
+            await connection.query(queryInsert, valores);
+        }
+        res.json({ message: "Citas insertadas correctamente" });
+    } catch (error) {
+        console.error("Error al insertar citas:", error);
+        res.status(400).json({ message: "Error al procesar la solicitud de inserción de citas." });
+    }
+};
+
+export const borrarCita = async (req, res) => {
+    const { IdCita } = req.query;
+    try {
+        const [result] = await connection.query
+            ("DELETE FROM Cita WHERE IdCita = ?", [IdCita]);
+        res.json({ message: "Cita eliminada correctamente" });
+    } catch (error) {
+        console.error("Error al eliminar cita: ", error);
+        res.status(500).json({ message: "Error al eliminar cita." });
+    }
+};
