@@ -187,11 +187,11 @@ export const insertarPsicologo = async (req, res) => {
                     IdPsicologo AS IdPsicologo
                 FROM
                     Psicologo p,
-                    (SELECT '2024-06-24' AS FechaCita UNION ALL
-                    SELECT '2024-06-25' UNION ALL
-                    SELECT '2024-06-26' UNION ALL
-                    SELECT '2024-06-27' UNION ALL
-                    SELECT '2024-06-28') AS Fechas,
+                    (SELECT '2024-07-15' AS FechaCita UNION ALL
+                    SELECT '2024-07-16' UNION ALL
+                    SELECT '2024-07-17' UNION ALL
+                    SELECT '2024-07-18' UNION ALL
+                    SELECT '2024-07-19') AS Fechas,
                     (SELECT '08:00:00' AS HoraCita UNION ALL
                     SELECT '09:30:00' UNION ALL
                     SELECT '11:00:00' UNION ALL
