@@ -25,11 +25,25 @@ export const setupSocket = (io) => {
     socket.on('message', async (msg) => {
       try {
         const { SenderId, ReceiverId, Mensaje } = msg;
+
+        // Insertar el mensaje en la base de datos
         const [result] = await connection.query(
           `INSERT INTO Mensajes (SenderId, ReceiverId, Mensaje) VALUES (?, ?, ?)`,
           [SenderId, ReceiverId, Mensaje]
         );
-        const newMessage = { IdMensaje: result.insertId, SenderId, ReceiverId, Mensaje, Timestamp: new Date() };
+
+        // Obtener el nombre del remitente
+        const [rows] = await connection.query(
+          `SELECT CONCAT(p.PrimerNombre, ' ', p.SegundoNombre, ' ', p.ApellidoPaterno, ' ', p.ApellidoMaterno) AS Nombre
+          FROM Persona p 
+          INNER JOIN Usuario u ON p.IdPersona = u.IdPersona
+          WHERE u.IdUsuario = ?`,
+          [SenderId]
+        );
+
+        const senderName = rows.length > 0 ? rows[0].Nombre : `Usuario ${SenderId}`;
+        const newMessage = { IdMensaje: result.insertId, SenderId, ReceiverId, Mensaje, Timestamp: new Date(), senderName };
+        
         io.emit('message', newMessage);
       } catch (error) {
         console.error(error);
