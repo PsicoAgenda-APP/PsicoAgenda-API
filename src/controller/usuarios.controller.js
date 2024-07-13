@@ -404,6 +404,7 @@ export const mantendorBuscar = async (req, res) => {
             const [result] = await connection.query(
                 `SELECT 
                     c.IdCita,
+                    pc.IdPaciente,
                     DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS FechaCita,
                     DATE_FORMAT(c.HoraCita, '%H:%i') as HoraCita,
                     CONCAT(pp.PrimerNombre, ' ', pp.ApellidoPaterno) AS NombrePaciente,
@@ -423,6 +424,7 @@ export const mantendorBuscar = async (req, res) => {
             const [result] = await connection.query(
                 `SELECT 
                     c.IdCita,
+                    pc.IdPaciente,
                     DATE_FORMAT(c.FechaCita, '%d-%m-%Y') AS FechaCita,
                     DATE_FORMAT(c.HoraCita, '%H:%i') as HoraCita,
                     CONCAT(pp.PrimerNombre, ' ', pp.ApellidoPaterno) AS NombrePaciente,
