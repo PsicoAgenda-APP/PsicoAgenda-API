@@ -15,8 +15,8 @@ router.post('/usuarios/patch_paciente', actualizarPaciente);
 router.get('/paciente/agendarCita', updateCita);
 router.get('/paciente/finalizarCita', finalizarCita);
 
-router.get('/paciente/borrarCita', borrarCita);
-router.get('/paciente/insertarCitas', insertarCitas);
+router.post('/paciente/borrarCita', borrarCita);
+router.delete('/paciente/insertarCitas', insertarCitas);
 
 
 
